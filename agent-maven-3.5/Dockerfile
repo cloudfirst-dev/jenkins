@@ -2,15 +2,16 @@ FROM openshift/jenkins-slave-base-centos7:v3.11
 
 MAINTAINER Gabe Montero <gmontero@redhat.com>
 
-ENV MAVEN_VERSION=3.5 \
+ENV MAVEN_VERSION=3.5.4 \
     GRADLE_VERSION=4.2.1 \
     BASH_ENV=/usr/local/bin/scl_enable \
     ENV=/usr/local/bin/scl_enable \
     PROMPT_COMMAND=". /usr/local/bin/scl_enable" \
-    PATH=$PATH:/opt/gradle/bin
+    PATH=$PATH:/opt/gradle/bin \
+    MAVEN_HOME=/usr/share/maven
 
 # Install Maven
-RUN INSTALL_PKGS="java-1.8.0-openjdk-devel.x86_64 rh-maven35*" && \
+RUN INSTALL_PKGS="java-1.8.0-openjdk-devel.x86_64" && \
     x86_EXTRA_RPMS=$(if [ "$(uname -m)" == "x86_64" ]; then echo -n java-1.8.0-openjdk-devel.i686 ; fi) && \
     yum install -y centos-release-scl-rh && \
     yum install -y --setopt=protected_multilib=false --enablerepo=centosplus $INSTALL_PKGS $x86_EXTRA_RPMS && \
@@ -18,8 +19,11 @@ RUN INSTALL_PKGS="java-1.8.0-openjdk-devel.x86_64 rh-maven35*" && \
     unzip gradle-${GRADLE_VERSION}-bin.zip -d /opt && \
     rm -f gradle-${GRADLE_VERSION}-bin.zip && \
     ln -s /opt/gradle-${GRADLE_VERSION} /opt/gradle && \
-    rpm -V java-1.8.0-openjdk-devel.x86_64 rh-maven35 $x86_EXTRA_RPMS && \
+    rpm -V java-1.8.0-openjdk-devel.x86_64 $x86_EXTRA_RPMS && \
     yum clean all -y && \
+    curl -fsSL https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | tar xzf - -C /usr/share && \
+    mv /usr/share/apache-maven-$MAVEN_VERSION /usr/share/maven && \
+    ln -s /usr/share/maven/bin/mvn /usr/bin/mvn && \
     mkdir -p $HOME/.m2 && \
     mkdir -p $HOME/.gradle
 
