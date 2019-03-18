@@ -8,6 +8,7 @@ USER 0
 
 # Install Maven
 RUN yum group install -y "Development Tools" && \
+    yum install -y libstdc++-static gnu-c++ zlib-devel && \
     curl -LOk https://github.com/oracle/graal/releases/download/vm-${GRAALVM_VERSION}/graalvm-ce-${GRAALVM_VERSION}-linux-amd64.tar.gz && \
     tar -xzf graalvm-ce-${GRAALVM_VERSION}-linux-amd64.tar.gz --directory=/opt && \
     rm -f graalvm-ce-${GRAALVM_VERSION}-linux-amd64.tar.gz && \
