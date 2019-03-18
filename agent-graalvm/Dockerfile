@@ -7,7 +7,8 @@ ENV GRAALVM_VERSION=1.0.0-rc14
 USER 0
 
 # Install Maven
-RUN curl -LOk https://github.com/oracle/graal/releases/download/vm-${GRAALVM_VERSION}/graalvm-ce-${GRAALVM_VERSION}-linux-amd64.tar.gz && \
+RUN yum group install -y "Development Tools" && \
+    curl -LOk https://github.com/oracle/graal/releases/download/vm-${GRAALVM_VERSION}/graalvm-ce-${GRAALVM_VERSION}-linux-amd64.tar.gz && \
     tar -xzf graalvm-ce-${GRAALVM_VERSION}-linux-amd64.tar.gz --directory=/opt && \
     rm -f graalvm-ce-${GRAALVM_VERSION}-linux-amd64.tar.gz && \
     ln -s /opt/graalvm-ce-${GRAALVM_VERSION} /opt/graalvm && \
