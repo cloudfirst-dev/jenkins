@@ -10,7 +10,7 @@ USER 0
 RUN curl -LOk https://github.com/oracle/graal/releases/download/vm-${GRAALVM_VERSION}/graalvm-ce-${GRAALVM_VERSION}-linux-amd64.tar.gz && \
     tar -xzf graalvm-ce-${GRAALVM_VERSION}-linux-amd64.tar.gz --directory=/opt && \
     rm -f graalvm-ce-${GRAALVM_VERSION}-linux-amd64.tar.gz && \
-    ln -s /opt/graalvm-ce-${GRAALVM_VERSION}-linux-amd64 /opt/graalvm && \
+    ln -s /opt/graalvm-ce-${GRAALVM_VERSION} /opt/graalvm && \
     yum clean all -y && \
     mkdir -p $HOME/.m2 && \
     mkdir -p $HOME/.gradle
