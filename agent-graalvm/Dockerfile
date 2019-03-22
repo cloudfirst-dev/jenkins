@@ -22,4 +22,3 @@ ENV GRAALVM_HOME /opt/graalvm
 RUN chown -R 1001:0 $HOME && \
     chmod -R g+rw $HOME
 
-USER 1001
