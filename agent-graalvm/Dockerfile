@@ -2,7 +2,7 @@ FROM quay.io/cloudfirst/jenkins-agent-maven-35-centos7
 
 MAINTAINER Joshua Mathianas <mathianasj@cloudfirst.dev>
 
-ENV GRAALVM_VERSION=1.0.0-rc14
+ENV GRAALVM_VERSION=1.0.0-rc16
 
 USER 0
 
