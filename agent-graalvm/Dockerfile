@@ -1,8 +1,17 @@
-FROM quay.io/cloudfirst/jenkins-agent-maven-35-centos7
+FROM openshift/jenkins-slave-base-centos7
 
 MAINTAINER Joshua Mathianas <mathianasj@cloudfirst.dev>
 
 ARG GRAAL_VERSION=1.0.0-rc16
+
+ENV MAVEN_VERSION=3.5.4 \
+    GRADLE_VERSION=4.2.1 \
+    BASH_ENV=/usr/local/bin/scl_enable \
+    ENV=/usr/local/bin/scl_enable \
+    PROMPT_COMMAND=". /usr/local/bin/scl_enable" \
+    PATH=$PATH:/opt/gradle/bin \
+    MAVEN_HOME=/usr/share/maven
+
 
 ENV GRAAL_CE_URL=https://github.com/oracle/graal/releases/download/vm-${GRAAL_VERSION}/graalvm-ce-${GRAAL_VERSION}-linux-amd64.tar.gz
 ENV GRAALVM_HOME /opt/graalvm
@@ -11,7 +20,19 @@ ENV MAVEN_OPTS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1"
 
 ENV PATH=$PATH:$JAVA_HOME/bin
 
-USER 0
+# Install Maven
+RUN INSTALL_PKGS="java-1.8.0-openjdk-devel.x86_64 rh-maven33*" && \
+    x86_EXTRA_RPMS=$(if [ "$(uname -m)" == "x86_64" ]; then echo -n java-1.8.0-openjdk-devel.i686 ; fi) && \
+    yum install -y centos-release-scl-rh && \
+    yum install -y --enablerepo=centosplus $INSTALL_PKGS $x86_EXTRA_RPMS && \
+    curl -LOk https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip && \
+    unzip gradle-${GRADLE_VERSION}-bin.zip -d /opt && \
+    rm -f gradle-${GRADLE_VERSION}-bin.zip && \
+    ln -s /opt/gradle-${GRADLE_VERSION} /opt/gradle && \
+    rpm -V  java-1.8.0-openjdk-devel.x86_64 rh-maven33 $x86_EXTRA_RPMS && \
+    yum clean all -y && \
+    mkdir -p $HOME/.m2 && \
+    mkdir -p $HOME/.gradle
 
 RUN  yum update -y && \
 	 yum install -y --setopt=skip_missing_names_on_install=False tar gzip gcc glibc-devel zlib-devel curl && \
@@ -29,7 +50,10 @@ RUN  yum update -y && \
 
 ENV GRAALVM_HOME /opt/graalvm
 
-RUN chown -R 1001:0 $HOME && \
-    chmod -R ug+rwX $HOME
-
-USER 1001
+# When bash is started non-interactively, to run a shell script, for example it
+# looks for this variable and source the content of this file. This will enable
+# the SCL for all scripts without need to do 'scl enable'.
+ADD contrib/bin/scl_enable /usr/local/bin/scl_enable
+ADD contrib/bin/configure-slave /usr/local/bin/configure-slave
+ADD ./contrib/settings.xml $HOME/.m2/
+ADD ./contrib/init.gradle $HOME/.gradle/
