@@ -2,7 +2,7 @@ FROM openshift/jenkins-slave-base-centos7
 
 MAINTAINER Joshua Mathianas <mathianasj@cloudfirst.dev>
 
-ARG GRAAL_VERSION=1.0.0-rc16
+ARG GRAAL_VERSION=19.2.0
 
 ENV MAVEN_VERSION=3.5.4 \
     GRADLE_VERSION=4.2.1 \
