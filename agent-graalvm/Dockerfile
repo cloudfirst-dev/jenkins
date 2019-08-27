@@ -44,6 +44,7 @@ RUN  yum update -y && \
 	 mkdir -p ${GRAALVM_HOME} && \
 	 cd ${GRAALVM_HOME} && \
 	 curl -fsSL $GRAAL_CE_URL | tar -xzC ${GRAALVM_HOME} --strip-components=1  && \
+         gu install native-image && \
      ### Cleanup     
      yum clean all && \
      rm -f /tmp/graalvm-ce-amd64.tar.gz && \
