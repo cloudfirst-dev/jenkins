@@ -13,7 +13,7 @@ ENV MAVEN_VERSION=3.5.4 \
     MAVEN_HOME=/usr/share/maven
 
 
-ENV GRAAL_CE_URL=https://github.com/oracle/graal/releases/download/vm-${GRAAL_VERSION}/graalvm-ce-${GRAAL_VERSION}-linux-amd64.tar.gz
+ENV GRAAL_CE_URL=https://github.com/oracle/graal/releases/download/vm-${GRAAL_VERSION}/graalvm-ce-linux-amd64-${GRAAL_VERSION}.tar.gz
 ENV GRAALVM_HOME /opt/graalvm
 ENV JAVA_HOME /opt/graalvm
 ENV MAVEN_OPTS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1"
